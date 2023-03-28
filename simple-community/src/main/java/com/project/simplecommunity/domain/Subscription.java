@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class Subscription {
+public class Subscription extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;

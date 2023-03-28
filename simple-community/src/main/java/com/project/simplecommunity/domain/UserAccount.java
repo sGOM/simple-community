@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class UserAccount {
+public class UserAccount extends AuditingFields {
     @Id
     @Column(length = 50)
     private String userId;
