@@ -11,7 +11,7 @@ import java.util.Set;
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Post extends AuditingFields{
+public class Post extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
