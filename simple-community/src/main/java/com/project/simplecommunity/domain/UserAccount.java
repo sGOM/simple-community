@@ -7,10 +7,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class UserAccount extends AuditingFields {
+public class UserAccount extends AuditingDate {
     @Id
     @Column(length = 50)
     private String userId;
@@ -20,6 +22,16 @@ public class UserAccount extends AuditingFields {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    private UserAccount(String userId, String password, String email) {
+        this.userId = userId;
+        this.password = password;
+        this.email = email;
+    }
+
+    public static UserAccount of(String userId, String password, String email) {
+        return new UserAccount(userId, password, email);
+    }
 
 //    @OneToMany
 //    private List<Post> posts = new ArrayList<>();, 일단 post 에서 단방향하고 이후 필요하면 그때 양방향으로

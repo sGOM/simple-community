@@ -1,6 +1,7 @@
 package com.project.simplecommunity.dto;
 
-import com.project.simplecommunity.dto.reqeust.UserAccountDto;
+import com.project.simplecommunity.domain.UserAccount;
+import com.project.simplecommunity.dto.response.UserAccountResponseDto;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,16 +33,24 @@ public record UserPrincipal(
         );
     }
 
-    public static UserPrincipal from(UserAccountDto dto) {
+    public static UserPrincipal from(UserAccount entity) {
+        return UserPrincipal.of(
+                entity.getUserId(),
+                entity.getPassword(),
+                entity.getEmail()
+        );
+    }
+
+    public static UserPrincipal from(UserAccountResponseDto dto) {
         return UserPrincipal.of(
                 dto.userId(),
-                dto.password(),
+                null,
                 dto.email()
         );
     }
 
-    public UserAccountDto toDto() {
-        return UserAccountDto.of(
+    public UserAccount toEntity() {
+        return UserAccount.of(
                 username,
                 password,
                 email
