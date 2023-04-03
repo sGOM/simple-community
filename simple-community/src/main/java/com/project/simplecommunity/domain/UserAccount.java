@@ -23,6 +23,17 @@ public class UserAccount extends AuditingDate {
     @Column(nullable = false, unique = true)
     private String email;
 
+    public UserAccount updateUserAccount(String password, String email) {
+
+        Optional.ofNullable(password)
+                .ifPresent(newPassword -> this.password = newPassword);
+
+        Optional.ofNullable(email)
+                .ifPresent(newEmail -> this.email = newEmail);
+
+        return this;
+    }
+
     private UserAccount(String userId, String password, String email) {
         this.userId = userId;
         this.password = password;
