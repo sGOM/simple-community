@@ -25,6 +25,9 @@ public class Post extends AuditingFields {
     private String content;
 
     @Setter
+    private Long likes;
+
+    @Setter
     @ManyToOne(optional = false)
     @JoinColumn(name = "userId")
     private UserAccount userAccount;
@@ -37,6 +40,9 @@ public class Post extends AuditingFields {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private final Set<PostHashtag> postHashtags = new LinkedHashSet<>();
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private final Set<ImageUpload> imageUploads = new LinkedHashSet<>();
 
     public static Post of(String title, String content, UserAccount userAccount) {
         return new Post(title, content, userAccount);

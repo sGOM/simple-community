@@ -6,43 +6,43 @@ import lombok.*;
 import java.util.Objects;
 
 @Getter
-@ToString(callSuper = true)
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class PostHashtag {
+public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Setter
     @ManyToOne(optional = false)
-    @JoinColumn(name = "postId")
-    private Post post;
+    @JoinColumn(name = "userId")
+    private UserAccount userAccount;
 
     @Setter
     @ManyToOne(optional = false)
-    @JoinColumn(name = "hashtagId")
-    private Hashtag hashtag;
+    @JoinColumn(name = "postId")
+    private Post post;
 
-    public static PostHashtag of(Post post, Hashtag hashtag) {
-        return new PostHashtag(post, hashtag);
+    public Likes of(UserAccount userAccount, Post post) {
+        return new Likes(userAccount, post);
     }
 
-    private PostHashtag(Post post, Hashtag hashtag) {
+    private Likes(UserAccount userAccount, Post post) {
+        this.userAccount = userAccount;
         this.post = post;
-        this.hashtag = hashtag;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PostHashtag that)) return false;
-        return this.getId() != null && this.getId().equals(that.id);
+        if (!(o instanceof Likes likes)) return false;
+        return id != null && id.equals(likes.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getId());
+        return Objects.hash(id);
     }
 
 }
