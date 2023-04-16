@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO: 댓글 관련 코드 추가해야 함, 좋아요 관련 코드 작성
@@ -89,14 +90,30 @@ public class PostService {
             if (postRequest.title() != null) post.setTitle(postRequest.title());
             if (postRequest.content() != null) post.setContent(postRequest.content());
             if (postRequest.hashtags() != null) {
-                postHashtagRepository.deleteAllByPost_Id(postId);
+                postHashtagRepository.deletePhByPostId(postId);
                 postRepository.flush();
 
+                // saveAll() 사용 코드
+                List<Hashtag> newHashtags = new ArrayList<>();
+                List<PostHashtag> newPostHashtags = new ArrayList<>();
                 for (String hashtagName : postRequest.hashtags()) {
+                    Hashtag hashtag = hashtagRepository.findByHashtagName(hashtagName)
+                            .orElseGet(() -> {
+                                Hashtag newHashtag = Hashtag.of(hashtagName);
+                                newHashtags.add(newHashtag);
+                                return newHashtag;
+                            });
+                    newPostHashtags.add(PostHashtag.of(post, hashtag));
+                }
+                hashtagRepository.saveAll(newHashtags);
+                postHashtagRepository.saveAll(newPostHashtags);
+
+                // save() 사용 코드
+                /*for (String hashtagName : postRequest.hashtags()) {
                     Hashtag hashtag = hashtagRepository.findByHashtagName(hashtagName)
                             .orElseGet(() -> hashtagRepository.save(Hashtag.of(hashtagName)));
                     postHashtagRepository.save(PostHashtag.of(post, hashtag));
-                }
+                }*/
             }
         }
 
