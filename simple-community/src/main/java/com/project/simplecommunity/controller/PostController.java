@@ -3,7 +3,6 @@ package com.project.simplecommunity.controller;
 import com.project.simplecommunity.domain.searchtype.SearchType;
 import com.project.simplecommunity.dto.UserPrincipal;
 import com.project.simplecommunity.dto.reqeust.PostRequest;
-import com.project.simplecommunity.dto.reqeust.UserAccountDto;
 import com.project.simplecommunity.dto.response.PostResponse;
 import com.project.simplecommunity.pagination.PageResponseDto;
 import com.project.simplecommunity.pagination.SingleResponseDto;
@@ -62,7 +61,7 @@ public class PostController {
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles
             //@AuthenticationPrincipal UserPrincipal principal
     ) {
-        PostResponse post = postService.createPost(request, imageFiles, getUserAccount());
+        PostResponse post = postService.createPost(request, imageFiles, getUserPrincipal());
         return new ResponseEntity<>(new SingleResponseDto<>(post), HttpStatus.CREATED);
     }
 
@@ -73,7 +72,7 @@ public class PostController {
             @RequestPart(value = "imageFile", required = false) List<MultipartFile> multipartFiles
             //@AuthenticationPrincipal UserPrincipal principal
     ) {
-        PostResponse post = postService.updatePost(postId, request, multipartFiles, getUserAccount());
+        PostResponse post = postService.updatePost(postId, request, multipartFiles, getUserPrincipal());
         return new ResponseEntity<>(new SingleResponseDto<>(post), HttpStatus.OK);
     }
 
@@ -82,7 +81,7 @@ public class PostController {
                                            //@AuthenticationPrincipal UserPrincipal principal
     ) {
 
-        postService.deletePost(postId, getUserAccount().userId());
+        postService.deletePost(postId, getUserPrincipal().username());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -91,7 +90,7 @@ public class PostController {
             @PathVariable("post-id") Long postId,
             @AuthenticationPrincipal UserPrincipal principal)
     {
-        PostResponse post = postService.registerPostLike(postId, principal.toDto());
+        PostResponse post = postService.registerPostLike(postId, principal);
         return new ResponseEntity<>(new SingleResponseDto<>(post), HttpStatus.OK);
     }
 
@@ -100,14 +99,14 @@ public class PostController {
             @PathVariable("post-id") Long postId,
             @AuthenticationPrincipal UserPrincipal principal)
     {
-        PostResponse post = postService.deletePostLike(postId, principal.toDto());
+        PostResponse post = postService.deletePostLike(postId, principal);
         return new ResponseEntity<>(new SingleResponseDto<>(post), HttpStatus.OK);
     }
 
     // 임시
-    private UserAccountDto getUserAccount() {
+    private UserPrincipal getUserPrincipal() {
         return userAccountRepository.findById("juno")
-                .map(UserAccountDto::from)
+                .map(UserPrincipal::from)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않음."));
     }
 

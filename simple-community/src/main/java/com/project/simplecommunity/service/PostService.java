@@ -5,8 +5,8 @@ import com.project.simplecommunity.domain.Post;
 import com.project.simplecommunity.domain.PostHashtag;
 import com.project.simplecommunity.domain.UserAccount;
 import com.project.simplecommunity.domain.searchtype.SearchType;
+import com.project.simplecommunity.dto.UserPrincipal;
 import com.project.simplecommunity.dto.reqeust.PostRequest;
-import com.project.simplecommunity.dto.reqeust.UserAccountDto;
 import com.project.simplecommunity.dto.response.PostResponse;
 import com.project.simplecommunity.exception.custom.PostException;
 import com.project.simplecommunity.exception.custom.PostExceptionType;
@@ -63,7 +63,7 @@ public class PostService {
     }
 
     // TODO: 추후에 유저 정보 넣을 것
-    public PostResponse createPost(PostRequest postRequest, List<MultipartFile> multipartFiles, UserAccountDto dto) {
+    public PostResponse createPost(PostRequest postRequest, List<MultipartFile> multipartFiles, UserPrincipal dto) {
         Post post = postRepository.save(Post.of(postRequest.title(), postRequest.content(), dto.toEntity()));
 
         if (postRequest.hashtags() != null) {
@@ -81,10 +81,10 @@ public class PostService {
     }
 
     // TODO: 추후에 유저 정보 넣을 것
-    public PostResponse updatePost(Long postId, PostRequest postRequest, List<MultipartFile> multipartFiles, UserAccountDto dto) {
+    public PostResponse updatePost(Long postId, PostRequest postRequest, List<MultipartFile> multipartFiles, UserPrincipal dto) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(PostExceptionType.POST_NOT_FOUND));
-        UserAccount userAccount = userAccountRepository.getReferenceById(dto.userId());
+        UserAccount userAccount = userAccountRepository.getReferenceById(dto.username());
 
         if (post.getUserAccount().equals(userAccount)) {
             if (postRequest.title() != null) post.setTitle(postRequest.title());
@@ -127,12 +127,12 @@ public class PostService {
         postRepository.deleteByIdAndUserAccount_UserId(postId, username);
     }
 
-    public PostResponse registerPostLike(Long postId, UserAccountDto dto) {
+    public PostResponse registerPostLike(Long postId, UserPrincipal dto) {
 
         return null;
     }
 
-    public PostResponse deletePostLike(Long postId, UserAccountDto dto) {
+    public PostResponse deletePostLike(Long postId, UserPrincipal dto) {
 
         return null;
     }

@@ -3,8 +3,8 @@ package com.project.simplecommunity.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.simplecommunity.config.TestSecurityConfig;
 import com.project.simplecommunity.domain.searchtype.SearchType;
+import com.project.simplecommunity.dto.UserPrincipal;
 import com.project.simplecommunity.dto.reqeust.PostRequest;
-import com.project.simplecommunity.dto.reqeust.UserAccountDto;
 import com.project.simplecommunity.dto.response.PostResponse;
 import com.project.simplecommunity.service.store.FileSystemStorageService;
 import com.project.simplecommunity.service.PostService;
@@ -130,7 +130,7 @@ class PostControllerTest {
                 PostRequest.of("title", "content", List.of("hashtag")));
         MockMultipartFile jsonFile = new MockMultipartFile(
                 "request", "", "application/json", json.getBytes(StandardCharsets.UTF_8));
-        given(postService.createPost(any(PostRequest.class), eq(null), any(UserAccountDto.class))).willReturn(createPostResponse());
+        given(postService.createPost(any(PostRequest.class), eq(null), any(UserPrincipal.class))).willReturn(createPostResponse());
 
         // When & Then
         mvc.perform(multipart("/posts")
@@ -140,7 +140,7 @@ class PostControllerTest {
                 )
                 .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-        then(postService).should().createPost(any(PostRequest.class), eq(null), any(UserAccountDto.class));
+        then(postService).should().createPost(any(PostRequest.class), eq(null), any(UserPrincipal.class));
         then(storageService).shouldHaveNoInteractions();
     }
 
@@ -157,7 +157,7 @@ class PostControllerTest {
                 "imageFile.png",
                 "image/png",
                 "<<png data>>".getBytes());
-        given(postService.createPost(any(PostRequest.class), anyList(), any(UserAccountDto.class))).willReturn(createPostResponse());
+        given(postService.createPost(any(PostRequest.class), anyList(), any(UserPrincipal.class))).willReturn(createPostResponse());
 
         // When & Then
         mvc.perform(multipart("/posts")
@@ -168,7 +168,7 @@ class PostControllerTest {
                 )
                 .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-        then(postService).should().createPost(any(PostRequest.class), anyList(), any(UserAccountDto.class));
+        then(postService).should().createPost(any(PostRequest.class), anyList(), any(UserPrincipal.class));
     }
 
     @DisplayName("[PATCH] 포스트 수정 - 정상 호출")
@@ -180,7 +180,7 @@ class PostControllerTest {
                 PostRequest.of("new title", "new content", List.of("new hashtag")));
         MockMultipartFile jsonFile = new MockMultipartFile(
                 "request", "", "application/json", json.getBytes(StandardCharsets.UTF_8));
-        given(postService.updatePost(eq(postId), any(PostRequest.class), eq(null), any(UserAccountDto.class))).willReturn(createPostResponse());
+        given(postService.updatePost(eq(postId), any(PostRequest.class), eq(null), any(UserPrincipal.class))).willReturn(createPostResponse());
 
         // When & Then
         mvc.perform(multipart(HttpMethod.PATCH, "/posts/" + postId) // multipart()는 POST 로 강제 배정되기 때문에 PATCH 설정 필요
@@ -190,7 +190,7 @@ class PostControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-        then(postService).should().updatePost(eq(postId), any(PostRequest.class), eq(null), any(UserAccountDto.class));
+        then(postService).should().updatePost(eq(postId), any(PostRequest.class), eq(null), any(UserPrincipal.class));
         then(storageService).shouldHaveNoInteractions();
     }
 
