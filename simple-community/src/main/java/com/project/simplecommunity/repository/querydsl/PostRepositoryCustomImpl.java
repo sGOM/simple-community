@@ -38,6 +38,11 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         return new PageImpl<>(posts, pageable, query.fetchCount());
     }
 
+    /*
+    * 전부 LAZY 로딩으로 처리하므로 fetch join 이 아닌 inner join 이기 때문에
+    * HHH000104: firstResult/maxResults specified with collection fetch; applying in memory!
+    * 경고 메세지가 발생하지 않는다.
+    * */
     @Override
     public Page<Post> findByHashtagNames(List<String> hashtagNames, Pageable pageable) {
         QPost post = QPost.post;
